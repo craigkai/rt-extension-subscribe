@@ -1,0 +1,13 @@
+<div class="col-md-12">
+  <&|/Widgets/TitleBox, title => loc("Accomidations"), class => '', &>
+
+      some content
+
+  </&>
+</div>
+
+<%init>
+</%init>
+<%args>
+$Ticket
+</%args>

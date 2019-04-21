@@ -1,0 +1,11 @@
+<div class="col-md-12">
+  <&|/Widgets/TitleBox, title => loc("Travel Links"), class => '', &>
+    <& /Elements/ShowLinksOfType, Object => $Ticket, Type => 'RefersTo' &>
+  </&>
+</div>
+
+<%init>
+</%init>
+<%args>
+$Ticket
+</%args>

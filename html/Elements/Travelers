@@ -1,0 +1,19 @@
+<div class="col-md-12">
+  <&|/Widgets/TitleBox, title => loc("Travelers"), class => '', &>
+    <div class="col-md-12">
+      <div class="form-row">
+        <span class="label">Going:</span>
+        <span class="value"><& /Ticket/Elements/ShowGroupMembers, Group => $Ticket->RoleGroup($role->GroupType), Ticket => $Ticket &></span>
+      </div>
+    </div>
+  </&>
+</div>
+
+<%init>
+my $role = RT::CustomRole->new($session{'CurrentUser'});
+my ($ret, $msg) = $role->Load('Going');
+RT::Logger->error("Could not load custom role 'Going': $msg") unless $ret;
+</%init>
+<%args>
+$Ticket
+</%args>

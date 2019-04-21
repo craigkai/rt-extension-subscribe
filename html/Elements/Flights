@@ -1,0 +1,42 @@
+% if ( %flight ) {
+<div class="col-md-12">
+  <&|/Widgets/TitleBox, title => loc("Flight Information"), class => '', &>
+    <div class="form-row">
+      <span class="label">Flight Number:</span>
+      <span class="value entry"><input id="Travelers-Flight-Number-<%$Ticket->Id%>" onchange="UpdateFlightNumber(<%$Ticket->Id%>)" class="form-control" type="text" value="<%$FlightNumber%>"/></span>
+    </div>
+%    if ( $FlightNumber ) {
+    <div id="travelers-flight-info">
+      <div class="form-row">
+        <span class="label">On Time:</span>
+        <span class="value entry" style="color:red;">Flight Delayed: <% $flight{'Delay'} %></span>
+      </div>
+
+      <div class="form-row">
+        <span class="label">Terminal:</span>
+        <span class="value entry">Terminal: <%$flight{'Terminal'}%></span>
+      </div>
+
+      <div class="form-row">
+        <span class="label">Gate:</span>
+        <span class="value entry">Gate: <%$flight{'Gate'}%></span>
+      </div>
+    </div>
+%    }
+  </&>
+</div>
+% }
+
+<%init>
+use RT::ExternalTools;
+my %flight = RT::ExternalTools->Prepare(
+        Action => 'Flights',
+        %ARGS,
+    );
+
+$FlightNumber = $Ticket->FirstCustomFieldValue('Flight Number');
+</%init>
+<%args>
+$FlightNumber  => undef
+$Ticket
+</%args>

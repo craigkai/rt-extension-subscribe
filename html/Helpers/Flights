@@ -1,0 +1,28 @@
+% $r->content_type('application/json; charset=utf-8');
+<% JSON( \%data ) |n %>
+% $m->abort;
+<%INIT>
+my %data = {};
+use RT::ExternalTools::Flights;
+
+if ( $POSTDATA ) {
+    my $args = JSON::decode_json($ARGS{'POSTDATA'});
+    $args->{'CurrentUser'} = $session{'CurrentUser'};
+
+    my ($ret, $msg) = RT::ExternalTools::Flights->UpdateFlightsCustomField(
+        %{$args}
+    );
+
+    if ( $ret ) {
+        %data = RT::ExternalTools->Prepare(
+            Action => 'Flights',
+            %{$args}
+        );
+    } else {
+        $m->abort;
+    }
+}
+</%INIT>
+<%ARGS>
+$POSTDATA        => undef
+</%ARGS>

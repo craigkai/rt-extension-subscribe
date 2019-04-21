@@ -1,0 +1,130 @@
+use strict;
+use warnings;
+
+our @Groups;
+our @ACL;
+our @CustomFields;
+our @Attributes;
+our @CustomRoles;
+our @ScripActions;
+our @Scrips;
+our @ScripConditions;
+our @Templates;
+
+our @Queues = ({
+        Name              => 'Travelers',
+        Description       => 'Queue for people looking to adventure',
+        CorrespondAddress => "craig-travel\@kaiserengineering.io",
+        CommentAddress    => "",
+        Lifecycle         => 'default',
+});
+
+# We want this to be user defined to use RT::Annouce
+#@Groups = {
+#    Name => 'Travelers',
+#    Description => 'Travel squad',
+#};
+
+push @ACL, map {
+    {
+        Right       => $_,
+        Queue       => 'Travelers',
+        GroupDomain => 'UserDefined',
+        GroupId     => 'Travelers'
+    }
+} qw/CreateTicket CommentOnTicket Watch SeeCustomField SeeQueue ShowTicket ModifyTicket ModifyCustomField/;
+
+push @ACL, map {
+    {
+        Right       => $_,
+        GroupDomain => 'UserDefined',
+        GroupId     => 'Travelers'
+    }
+} qw/ShowSavedSearches IsTraveler/;
+
+
+@ScripActions = (
+    {
+        Name        => 'Notify Travelers group',
+        Description => '',
+        ExecModule  => 'NotifyGroup',
+        Argument    => 'Travelers',
+    },
+);
+
+@Scrips = {
+    Queue           => 'Travelers',
+    Description     => 'Alert members of Travelers group on ticket create',
+    ScripCondition  => 'On Create',
+    ScripAction     => 'Notify Travelers group',
+    Template        => 'Blank',
+    Stage           => 'TransactionCreate',
+}
+
+@CustomFields = (
+    {
+        Name        => 'Depart',
+        Type        => 'Date',
+        LookupType  => 'RT::Queue-RT::Ticket',
+        ApplyTo     => 'Travelers',
+        MaxValues   => 1,
+    },
+    {
+        Name        => 'Return',
+        Type        => 'Date',
+        LookupType  => 'RT::Queue-RT::Ticket',
+        ApplyTo     => 'Travelers',
+        MaxValues   => 1,
+    },
+    {
+        Name        => 'Hotels',
+        Type        => 'Date',
+        LookupType  => 'RT::Queue-RT::Ticket',
+        ApplyTo     => 'Travelers',
+        MaxValues   => 1,
+    },
+    {
+        Name        => 'AirBnB',
+        Type        => 'Date',
+        LookupType  => 'RT::Queue-RT::Ticket',
+        ApplyTo     => 'Travelers',
+        MaxValues   => 1,
+    },
+    {
+        Name        => 'Things To Do',
+        Type        => 'FreeformMultiple',
+        LookupType  => 'RT::Queue-RT::Ticket',
+        ApplyTo     => 'Travelers',
+        MaxValues   => 1,
+    },
+    {
+        Name        => 'Information',
+        Type        => 'FreeformMultiple',
+        LookupType  => 'RT::Queue-RT::Ticket',
+        ApplyTo     => 'Travelers',
+        MaxValues   => 1,
+    },
+    {
+        Name        => 'Summary',
+        Type        => 'text',
+        LookupType  => 'RT::Queue-RT::Ticket',
+        ApplyTo     => 'Travelers',
+        MaxValues   => 1,
+    },
+    {
+        Name        => 'Expenses',
+        Type        => 'FreeformMultiple',
+        LookupType  => 'RT::Queue-RT::Ticket',
+        ApplyTo     => 'Travelers',
+        MaxValues   => 1,
+        Pattern     => '.+:(?:\s)\$\d+\.\d+'
+    },
+);
+
+@CustomRoles = (
+    {
+        Name        => 'Going',
+        Description => 'Travelers going on the adventure.',
+        ApplyTo     => 'Travelers',
+    }
+);

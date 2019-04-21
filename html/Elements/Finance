@@ -1,0 +1,45 @@
+<div class="col-md-12">
+  <&|/Widgets/TitleBox, title => loc("Finance Information"), class => '', &>
+    <div class="form-row">
+      <div class="col-md-12">
+%  for ( @expenses ) {
+        <div class="form-row">
+          <% $_ %>
+        </div>
+%  }
+        <div class="form-row">
+          Cost Per Traveler (<% $num_travelers %>): $<% $cost_per_traveler %>
+        </div>
+      </div>
+    </div>
+  </&>
+</div>
+
+<%init>
+# Calculate number of people going and divide total value by that number
+my $going = RT::CustomRole->new($session{'CurrentUser'});
+my ($ret, $msg) = $going->Load('Going');
+RT::Logger->error("Could not load custom role 'Going': $msg") unless $ret;
+
+my @people = split(', ', $Ticket->RoleAddresses($going->GroupType));
+my $num_travelers = scalar @people;
+
+my $expenses = $Ticket->LoadCustomFieldByIdentifier('Expenses');
+
+my $total_expenses = 0;
+$expenses = $expenses->ValuesForObject($Ticket);
+my @expenses;
+while ( my $expense = $expenses->Next ) {
+  push @expenses, $expense->Content;
+
+  my $cost = $expense->Content;
+
+  $cost =~ s/.+:(?:\s)\$(\d+\.\d+)/$1/;
+  $total_expenses = $total_expenses + $cost;
+}
+
+my $cost_per_traveler = $total_expenses / $num_travelers;
+</%init>
+<%args>
+$Ticket
+</%args>

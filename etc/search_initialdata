@@ -1,0 +1,59 @@
+my $group = RT::Group->new( RT->SystemUser );
+my( $ret, $msg ) = $group->LoadUserDefinedGroup( 'Travelers' );
+die $msg unless $ret;
+
+@Attributes = (
+    {
+      Name        => 'Search - Active Trips',
+      Description => 'Active Trips',
+      Content     =>
+      { Format    =>  q{'<b><a href="__WebPath__/Ticket/Display.html?id=__id__">__id__</a></b>/TITLE:#',}
+                    .q{'<b><a href="__WebPath__/Ticket/Display.html?id=__id__">__Subject__</a></b>/TITLE:Subject',}
+                    .q{Status, Owner},
+        Query    => "Queue = 'Travelers' AND Status = '__Active__'",
+      },
+    },
+    {
+      Name        => 'Search - My Active Trips',
+      Description => 'My Active Trips',
+      Object      => '',
+      Content     =>
+      { Format    =>  q{'<b><a href="__WebPath__/Ticket/Display.html?id=__id__">__id__</a></b>/TITLE:#',}
+                    .q{'<b><a href="__WebPath__/Ticket/Display.html?id=__id__">__Subject__</a></b>/TITLE:Subject',}
+                    .q{Status, Owner},
+        Query    => "Queue = 'Travelers' AND Status = '__Active__' AND ( Requestor.id LIKE '__CurrentUser__' OR AdminCc.id LIKE '__CurrentUser__')",
+      }
+    },
+    {
+        Name        => 'HomepageSettings',
+        Description => 'HomepageSettings',
+        Content     => {
+            'body' => # loc_left_pair
+              [
+                {
+                    type => 'system',
+                    name => 'My Active Trips', # loc
+                },
+                {
+                    type => 'system',
+                    name => 'Bookmarked Tickets'    # loc
+                },
+              ],
+            'sidebar' => # loc_left_pair
+              [
+                {
+                    type => 'system',
+                    name => 'Active Trips' # loc
+                },
+              ],
+        },
+    },
+);
+
+# Remove two attributes that we're going to redefine
+push @Initial, sub {
+    my $attribute = RT::Attribute->new($RT::SystemUser);
+    $attribute->LoadByCols( Name => 'HomepageSettings' );
+    my ($id, $msg) = $attribute->Delete;
+    $RT::Logger->warning("delete $id: $msg");
+};

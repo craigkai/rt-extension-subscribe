@@ -1,0 +1,37 @@
+<%init>
+return unless $ARGSRef and $TicketObj;
+
+if ( $ARGSRef->{'subscribe'} ) {
+    my ($ret, $msg) = $$TicketObj->AddWatcher( Type => 'AdminCc', PrincipalId => $session{'CurrentUser'}->PrincipalId );
+    RT::Logger->error($msg) unless $ret;
+    push @$Actions, $msg;
+}
+
+if ( $ARGSRef->{'unsubscribe'} ) {
+    my ($ret, $msg) = $$TicketObj->DeleteWatcher( Type => 'AdminCc', PrincipalId => $session{'CurrentUser'}->PrincipalId );
+    RT::Logger->error($msg) unless $ret;
+    push @$Actions, $msg;
+}
+
+my $role = RT::CustomRole->new($session{'CurrentUser'});
+my ($ret, $msg) = $role->Load('Going');
+RT::Logger->error("Could not load custom role 'Going': $msg") unless $ret;
+
+if ( $ARGSRef->{'Going'} ) {
+    my ($ret, $msg) = $$TicketObj->AddWatcher( Type => $role->GroupType, PrincipalId => $session{'CurrentUser'}->PrincipalId );
+    RT::Logger->error($msg) unless $ret;
+    push @$Actions, $msg;
+}
+
+if ( $ARGSRef->{'NotGoing'} ) {
+    my ($ret, $msg) = $$TicketObj->DeleteWatcher( Type => $role->GroupType, PrincipalId => $session{'CurrentUser'}->PrincipalId );
+    RT::Logger->error($msg) unless $ret;
+    push @$Actions, $msg;
+}
+
+</%init>
+<%args>
+$ARGSRef
+$TicketObj
+$Actions
+</%args>
