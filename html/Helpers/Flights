@@ -2,7 +2,7 @@
 <% JSON( \%data ) |n %>
 % $m->abort;
 <%INIT>
-my %data = {};
+my %data = ();
 use RT::ExternalTools::Flights;
 
 if ( $POSTDATA ) {
@@ -14,8 +14,7 @@ if ( $POSTDATA ) {
     );
 
     if ( $ret ) {
-        %data = RT::ExternalTools->Prepare(
-            Action => 'Flights',
+        %data = RT::ExternalTools::Flights->GetFlightData(
             %{$args}
         );
     } else {

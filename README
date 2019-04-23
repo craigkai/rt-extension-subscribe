@@ -1,14 +1,9 @@
 NAME
-    RT-Extension-Subscribe - [One line description of module's purpose here]
+    RT-Extension-Subscribe
 
 DESCRIPTION
-    [Why would someone install this extension? What does it do? What problem
-    does it solve?]
-
 RT VERSION
-    Works with RT [What versions of RT is this known to work with?]
-
-    [Make sure to use requires_rt and rt_too_new in Makefile.PL]
+    Works with RT 4.4
 
 INSTALLATION
     perl Makefile.PL
@@ -20,6 +15,10 @@ INSTALLATION
         Add this line:
 
             Plugin('RT::Extension::Subscribe');
+
+        1. Create group "Travelers" (Need to be user created) 2. $make
+        initdb (Do this once) 3. Install OAuth for Google sign in. 4.
+        Install RT::Extension::Announce
 
     Clear your mason cache
             rm -rf /opt/rt4/var/mason_data/obj

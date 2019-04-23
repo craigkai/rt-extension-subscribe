@@ -1,4 +1,4 @@
-<div class="col-md-12">
+<div class="col-md-12" <div class="form-row" data-toggle="tooltip" data-placement="top" title="submit expenses in format of <label>: $100.00">
   <&|/Widgets/TitleBox, title => loc("Finance Information"), class => '', &>
     <div class="form-row">
       <div class="col-md-12">
@@ -8,7 +8,12 @@
         </div>
 %  }
         <div class="form-row">
-          Cost Per Traveler (<% $num_travelers %>): $<% $cost_per_traveler %>
+          <div class="">
+            Cost Per Traveler (<% $num_travelers %>):
+          </div>
+          <div class="value" style="color: green;">
+            $<% $cost_per_traveler %>
+          </div>
         </div>
       </div>
     </div>
@@ -22,7 +27,7 @@ my ($ret, $msg) = $going->Load('Going');
 RT::Logger->error("Could not load custom role 'Going': $msg") unless $ret;
 
 my @people = split(', ', $Ticket->RoleAddresses($going->GroupType));
-my $num_travelers = scalar @people;
+my $num_travelers = scalar @people || 1;
 
 my $expenses = $Ticket->LoadCustomFieldByIdentifier('Expenses');
 

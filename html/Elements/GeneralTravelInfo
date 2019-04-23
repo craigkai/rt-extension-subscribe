@@ -1,11 +1,10 @@
 <div class="col-md-12">
   <&|/Widgets/TitleBox, title => loc("General Info"), class => '', &>
-      <% $text %>
+    <& /Elements/ShowCustomFields, Table => 0, Object => $Ticket, Grouping => 'General Info' &>
   </&>
 </div>
 
 <%init>
-my $text = $Ticket->FirstCustomFieldValue('Summary') || 'General summary of trip goes here ...';
 </%init>
 <%args>
 $Ticket

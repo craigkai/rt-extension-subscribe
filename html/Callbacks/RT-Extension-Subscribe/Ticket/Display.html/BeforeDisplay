@@ -4,13 +4,23 @@ return unless $ARGSRef and $TicketObj;
 if ( $ARGSRef->{'subscribe'} ) {
     my ($ret, $msg) = $$TicketObj->AddWatcher( Type => 'AdminCc', PrincipalId => $session{'CurrentUser'}->PrincipalId );
     RT::Logger->error($msg) unless $ret;
-    push @$Actions, $msg;
+
+    if ( $ret ) {
+        push @$Actions, "You are now subscribed to this trip, you will recieve all updates for it!";
+    } else {
+        push @$Actions, $msg;
+    }
 }
 
 if ( $ARGSRef->{'unsubscribe'} ) {
     my ($ret, $msg) = $$TicketObj->DeleteWatcher( Type => 'AdminCc', PrincipalId => $session{'CurrentUser'}->PrincipalId );
     RT::Logger->error($msg) unless $ret;
-    push @$Actions, $msg;
+
+    if ( $ret ) {
+        push @$Actions, "You've been unsubscribed from this trip (boo)";
+    } else {
+        push @$Actions, $msg;
+    }
 }
 
 my $role = RT::CustomRole->new($session{'CurrentUser'});
@@ -20,13 +30,23 @@ RT::Logger->error("Could not load custom role 'Going': $msg") unless $ret;
 if ( $ARGSRef->{'Going'} ) {
     my ($ret, $msg) = $$TicketObj->AddWatcher( Type => $role->GroupType, PrincipalId => $session{'CurrentUser'}->PrincipalId );
     RT::Logger->error($msg) unless $ret;
-    push @$Actions, $msg;
+
+    if ( $ret ) {
+        push @$Actions, "Welcome aboard, get ready for a good time!";
+    } else {
+        push @$Actions, $msg;
+    }
 }
 
 if ( $ARGSRef->{'NotGoing'} ) {
     my ($ret, $msg) = $$TicketObj->DeleteWatcher( Type => $role->GroupType, PrincipalId => $session{'CurrentUser'}->PrincipalId );
     RT::Logger->error($msg) unless $ret;
-    push @$Actions, $msg;
+
+    if ( $ret ) {
+        push @$Actions, "Sorry to hear you aren't going :/";
+    } else {
+        push @$Actions, $msg;
+    }
 }
 
 </%init>

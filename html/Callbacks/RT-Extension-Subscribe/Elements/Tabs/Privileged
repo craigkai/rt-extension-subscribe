@@ -14,59 +14,54 @@ if ( $isTraveler && not $adminTraveler ) {
 }
 
 # Ticket-only changes below this point
-return unless $Path =~ m{^/Ticket/};
 my $id = $DECODED_ARGS->{'id'};
-return unless $id;
+if ( $Path =~ m{^/Ticket/} and $id ) {
+    my $ticket = RT::Ticket->new( $session{'CurrentUser'} );
+    my ( $ret, $msg ) = $ticket->Load( $id );
+    RT::Logger->error( 'Unable to load ticket ' . $id . ': ' . $msg ) unless $ret;
+    last unless $ret;
 
-my $ticket = RT::Ticket->new( $session{'CurrentUser'} );
-my ( $ret, $msg ) = $ticket->Load( $id );
-RT::Logger->error( 'Unable to load ticket ' . $id . ': ' . $msg ) unless $ret;
-return unless $ret;
+    if ( $isTraveler && not $adminTraveler ) {
+        my @children = PageMenu()->children;
+        foreach my $menu_item (@children) {
+            next if grep {$menu_item->key eq $_} qw/actions basics display bookmark links/;
+            PageMenu()->delete($menu_item->key);
+        }
 
-
-if ( $isTraveler && not $adminTraveler ) {
-    my @children = PageMenu()->children;
-    foreach my $menu_item (@children) {
-        next if grep {$menu_item->key eq $_} qw/actions basics display/;
-        PageMenu()->delete($menu_item->key);
+        for (qw/reply Stall Resolve Reject untake/, 'Slack Update') {
+            PageMenu()->child('actions')->delete($_);
+        }
     }
 
-    for (qw/reply Stall Resolve Reject untake/, 'Slack Update') {
-        PageMenu()->child('actions')->delete($_);
+    if ( $ticket->IsAdminCc($session{'CurrentUser'}->PrincipalId) ) {
+        PageMenu()->child(
+            'unsubscribe' => title => loc( 'Unsubscribe' ),
+            path => '/Ticket/Display.html?unsubscribe=1&id=' . $id,
+        );
+    } else {
+        PageMenu()->child(
+            'subscribe' => title => loc( 'Subscribe' ),
+            path => '/Ticket/Display.html?subscribe=1&id=' . $id,
+        );
+    }
+
+    my $going_role = RT::CustomRole->new($session{'CurrentUser'});
+    ($ret, $msg) = $going_role->Load('Going');
+    RT::Logger->error("Could not load custom role 'Going': $msg") unless $ret;
+
+    my $RoleString = $ticket->RoleAddresses($going_role->GroupType);
+    if ( $RoleString && grep $_ eq $session{'CurrentUser'}->EmailAddress, split ', ', $RoleString ) {
+        PageMenu()->child(
+            'notgoing' => title => loc( 'Not Going' ),
+            path => '/Ticket/Display.html?NotGoing=1&id=' . $id,
+        );
+    } else {
+        PageMenu()->child(
+            'going' => title => loc( 'Going' ),
+            path => '/Ticket/Display.html?Going=1&id=' . $id,
+        );
     }
 }
-
-if ( $ticket->IsAdminCc($session{'CurrentUser'}->PrincipalId) ) {
-    PageMenu()->child(
-        'unsubscribe' => title => loc( 'Unsubscribe' ),
-        path => '/Ticket/Display.html?unsubscribe=1&id=' . $id,
-    );
-} else {
-    PageMenu()->child(
-        'subscribe' => title => loc( 'Subscribe' ),
-        path => '/Ticket/Display.html?subscribe=1&id=' . $id,
-    );
-}
-
-my $going_role = RT::CustomRole->new($session{'CurrentUser'});
-($ret, $msg) = $going_role->Load('Going');
-RT::Logger->error("Could not load custom role 'Going': $msg") unless $ret;
-
-my $RoleString = $ticket->RoleAddresses($going_role->GroupType);
-if ( $RoleString && grep $_ eq $session{'CurrentUser'}->EmailAddress, split ', ', $RoleString ) {
-    PageMenu()->child(
-        'notgoing' => title => loc( 'Not Going' ),
-        path => '/Ticket/Display.html?NotGoing=1&id=' . $id,
-    );
-} else {
-    PageMenu()->child(
-        'going' => title => loc( 'Going' ),
-        path => '/Ticket/Display.html?Going=1&id=' . $id,
-    );
-}
-
-
-
 </%init>
 <%args>
 $Path
