@@ -3,15 +3,14 @@ jQuery(function() {
         jQuery('#announce').hide()
     }
     if( window.location.href.indexOf("Ticket/Display.html" ) > 0 && jQuery('#NonAdminTraveler').length > 0 ) {
-            const hide = [
-                '.ticket-info-basics', '.ticket-info-requestor',
+            const hide = ['.ticket-info-basics', '.ticket-info-requestor',
                 '.ticket-info-dates', '.ticket-info-links', '.ticket-info-people',
                 '.titlebox.card.ticket-info-cfs.ticket-info-cfs-Flight_Information',
                 '.titlebox.card.ticket-info-cfs.ticket-info-cfs-Travelers',
                 '.titlebox.card.ticket-info-cfs.ticket-info-cfs-Travel_Dates',
                 '.titlebox.card.ticket-info-cfs'
             ]
-            
+
             hide.forEach(function(element) {
                 jQuery(element).hide()
             })
@@ -38,8 +37,7 @@ jQuery(function() {
 
 const UpdateFlightInfo = (flight_info) => {
     if ( flight_info.Delay ) {
-        jQuery('#travelers-flight-info').html(
-        '<div id="travelers-flight-info" class="col-md-12">'
+        jQuery('#travelers-flight-info').html('<div id="travelers-flight-info" class="col-md-12">'
             +'<div class="form-row">'
                 +'<div class="label">Arrival Time:</div>'
                 +'<div class="value entry" style="color:red;">'+flight_info.Delay+'</div>'
@@ -52,12 +50,9 @@ const UpdateFlightInfo = (flight_info) => {
                 +'<div class="label">Gate:</div>'
                 +'<div class="value entry">'+flight_info.Gate+'</div>'
             +'</div>'
-        +'</div>'
-        )
+        +'</div>')
     } else {
-        jQuery('#travelers-flight-info').html(`
-            <div id="travelers-flight-info">No flight information available</div>
-        `)
+        jQuery('#travelers-flight-info').html('<div id="travelers-flight-info">No flight information available</div>')
     }
 }
 
