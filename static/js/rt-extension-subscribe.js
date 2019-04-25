@@ -2,7 +2,7 @@ jQuery(function() {
     if ( !jQuery('#NonAdminTraveler').length > 0 ) {
         jQuery('#announce').hide()
     }
-    if( window.location.href.indexOf("Ticket/Display.html" ) > 0 && jQuery('#NonAdminTraveler').length > 0 ) {
+    if( ( window.location.href.indexOf("Ticket/Display.html" ) > 0 ) && jQuery('#NonAdminTraveler').length > 0 ) {
             const hide = ['.ticket-info-basics', '.ticket-info-requestor',
                 '.ticket-info-dates', '.ticket-info-links', '.ticket-info-people',
                 '.titlebox.card.ticket-info-cfs.ticket-info-cfs-Flight_Information',
@@ -18,13 +18,21 @@ jQuery(function() {
 
     } else if ( window.location.href.indexOf("Ticket/Modify.html") > 1 && jQuery('#NonAdminTraveler').length > 0 ) {
         jQuery('.titlebox.card.ticket-info-basics').hide()
-    } else if ( window.location.href.indexOf("Ticket/Create.html") > 1 && jQuery('#NonAdminTraveler').length > 0 ) {
+    } else if ( ( window.location.href.indexOf("Ticket/Create.html") > 1 || window.location.href.indexOf("Ticket/Update.html") > 0 )
+                 && jQuery('#NonAdminTraveler').length > 0 ) {
         jQuery('.titlebox.card.ticket-info-basics').hide()
 
-        const message_box = jQuery('#ticket-create-message').find('.fields')
+        let message_box
+        if ( window.location.href.indexOf("Ticket/Update.html") > 0 ) {
+            message_box = jQuery('#ticket-update-message').find('.fields')
+        } else {
+            message_box = jQuery('#ticket-create-message').find('.fields')
+        }
+
         message_box.children('.field').each(function(){
             const val = this
-            const isSafe = jQuery.grep(['[name=Subject]', '#attach-dropzone', '#Content'], function(e) {
+            console.log(this)
+            const isSafe = jQuery.grep(['[name=Subject]', '#attach-dropzone', '#Content', '#UpdateContent', 'UpdateSubject'], function(e) {
                 return jQuery(val).children().find(e).length
             })
             if ( isSafe.length ) {
