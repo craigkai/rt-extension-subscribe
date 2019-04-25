@@ -188,7 +188,7 @@ push @ACL, map {
         ],
     },
     {
-        Name        => 'Accomidations',
+        Name        => 'Accommodations',
         Type        => 'FreeformMultiple',
         LookupType  => 'RT::Queue-RT::Ticket',
         ApplyTo     => 'Travelers',

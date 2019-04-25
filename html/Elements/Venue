@@ -1,5 +1,5 @@
 <div class="col-md-12">
-  <&|/Widgets/TitleBox, title => loc("Venue"), class => '', &>
+  <&|/Widgets/TitleBox, title => loc("Location"), class => '', &>
       <div class="value">
         <& /Elements/ShowCustomFields, Table => 0, Object => $Ticket, Grouping => 'Venue' &>
       </div>

@@ -5,12 +5,12 @@ etc/search_initialdata
 html/Callbacks/RT-Extension-Subscribe/Elements/Tabs/Privileged
 html/Callbacks/RT-Extension-Subscribe/Ticket/Display.html/BeforeDisplay
 html/Callbacks/RT-Extension-Subscribe/Ticket/Elements/ShowSummary/AfterPeople
-html/Elements/Accomidations
 html/Elements/Finance
-html/Elements/Flights
 html/Elements/GeneralTravelInfo
+html/Elements/Transportation
 html/Elements/Travelers
 html/Elements/TravelLinks
+html/Elements/Venue
 html/Helpers/Flights
 inc/Module/Install.pm
 inc/Module/Install/Base.pm
