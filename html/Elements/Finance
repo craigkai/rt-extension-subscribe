@@ -1,4 +1,4 @@
-<div class="col-md-12" <div class="form-row" data-toggle="tooltip" data-placement="top" title="submit expenses in format of <label>: $100.00">
+<div class="col-md-12" <div class="form-row">
   <&|/Widgets/TitleBox, title => loc("Finance Information"), class => '', &>
     <div class="form-row">
       <div class="col-md-12">
