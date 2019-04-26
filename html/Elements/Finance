@@ -39,7 +39,8 @@ while ( my $expense = $expenses->Next ) {
 
   my $cost = $expense->Content;
 
-  $cost =~ s/(.+:(?:\s))\$(\d+\.\d+)/$2/;
+  $cost =~ s/(.+:)?.*\$(\d+(\.\d+)?)/$2/;
+
   if ( $1 =~ /per person/ ) {
     $total_expenses = $total_expenses + ( $cost * $num_travelers );
   } else {
