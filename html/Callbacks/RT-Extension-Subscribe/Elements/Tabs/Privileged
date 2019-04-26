@@ -28,7 +28,7 @@ if ( $Path =~ m{^/Ticket/} and $id ) {
             PageMenu()->delete($menu_item->key);
         }
 
-        for (qw/reply Stall Resolve Reject untake/, 'Slack Update') {
+        for (qw/comment Stall Resolve Reject untake/, 'Slack Update') {
             PageMenu()->child('actions')->delete($_);
         }
     }
