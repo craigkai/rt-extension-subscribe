@@ -2,31 +2,26 @@
   </div>
 <div class="col-md-12">
   <div class="row">
-    <div class="col-md-6">
 
+    <div class="col-md-6">
       <div class="row">
         <& /Elements/Travelers, %ARGS &>
       </div>
       <div class="row">
         <& /Elements/Finance, %ARGS &>
       </div>
-
       <div class="row">
         <& /Elements/GeneralTravelInfo, %ARGS &>
       </div>
-
     </div>
 
     <div class="col-md-6">
-
+%#      <div class="row">
+%#        <& /Elements/Transportation, %ARGS &>
+%#      </div>
       <div class="row">
-        <& /Elements/Flights, %ARGS &>
+        <& /Elements/Venue, %ARGS &>
       </div>
-
-      <div class="row">
-        <& /Elements/Accomidations, %ARGS &>
-      </div>
-
       <div class="row">
         <& /Elements/TravelLinks, %ARGS &>
       </div>
@@ -36,4 +31,5 @@
 % }
 <%init>
 my $isTraveler = $session{'CurrentUser'}->HasRight( Right => 'IsTraveler', Object => RT->System );
+$isTraveler = not $session{'CurrentUser'}->HasRight( Right => 'SuperUser', Object => RT->System );
 </%init>

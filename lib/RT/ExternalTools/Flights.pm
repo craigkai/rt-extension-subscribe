@@ -4,14 +4,41 @@ use warnings;
 package RT::ExternalTools::Flights;
 use base qw(RT::ExternalTools);
 
-sub Action {
+use JSON;
+use LWP::UserAgent;
+
+sub GetFlightData {
     my $self = shift;
-    my %args = (@_);
+    my %args = (
+        TicketId     => undef,
+        CurrentUser  => undef,
+        FlightNumber => undef,
+        @_
+    );
+    
+    my $ticket = RT::Ticket->new($args{'CurrentUser'});
+    $ticket->Load($args{'TicketId'});
+    RT::Logger->error("Could not load ticket: " . $args{'TicketId'}) unless $ticket->Id;
+    return unless $ticket->Id;
+
+    my $departure_datetime = $ticket->FirstCustomFieldValue('Depart');
+    return unless $departure_datetime and $args{'FlightNumber'};
+
+    my $ua = LWP::UserAgent->new;
+    my $url = 'https://adsbexchange.com/api/aircraft/icao/'.$args{'FlightNumber'};
+
+    my $req = HTTP::Request->new(GET => $url);
+    $req->header('content-type' => 'application/json');
+
+    my $resp = $ua->request($req);
+    my $message = decode_json($resp->decoded_content);
+
+    my %ret = ();
 
     return (
-        Delay    => '10 minutes',
-        Gate     => '12',
-        Terminal => 'D',
+        Delay    => $ret{'departure'}->{'estimatedTime'},
+        Gate     => $ret{'departure'}->{'gate'},
+        Terminal => $ret{'departure'}->{'terminal'},
     );
 }
 

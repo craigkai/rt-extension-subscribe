@@ -12,18 +12,14 @@ RT::Queue->AddRight( Travelers => AdminTraveler => "Means you are a traveler and
 
 =head1 NAME
 
-RT-Extension-Subscribe - [One line description of module's purpose here]
+RT-Extension-Subscribe
 
 =head1 DESCRIPTION
 
-[Why would someone install this extension? What does it do? What problem
-does it solve?]
 
 =head1 RT VERSION
 
-Works with RT [What versions of RT is this known to work with?]
-
-[Make sure to use requires_rt and rt_too_new in Makefile.PL]
+Works with RT 4.4
 
 =head1 INSTALLATION
 
@@ -42,6 +38,11 @@ May need root permissions
 Add this line:
 
     Plugin('RT::Extension::Subscribe');
+
+1. Create group "Travelers" (Need to be user created)
+2. $make initdb (Do this once)
+3. Install OAuth for Google sign in.
+4. Install RT::Extension::Announce
 
 =item Clear your mason cache
 

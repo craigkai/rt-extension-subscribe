@@ -1,5 +1,8 @@
 jQuery(function() {
-    if( window.location.href.indexOf("Ticket/Display.html" ) > -1 ) {
+    if ( !jQuery('#NonAdminTraveler').length > 0 ) {
+        jQuery('#announce').hide()
+    }
+    if( ( window.location.href.indexOf("Ticket/Display.html" ) > 0 ) && jQuery('#NonAdminTraveler').length > 0 ) {
             const hide = ['.ticket-info-basics', '.ticket-info-requestor',
                 '.ticket-info-dates', '.ticket-info-links', '.ticket-info-people',
                 '.titlebox.card.ticket-info-cfs.ticket-info-cfs-Flight_Information',
@@ -7,24 +10,58 @@ jQuery(function() {
                 '.titlebox.card.ticket-info-cfs.ticket-info-cfs-Travel_Dates',
                 '.titlebox.card.ticket-info-cfs'
             ]
-            
+
             hide.forEach(function(element) {
                 jQuery(element).hide()
             })
         jQuery("span:contains('Ticket metadata')").text("Travel Information")
-    } else if ( window.location.href.indexOf("Ticket/Modify.html" &&  jQuery('#NonAdminTraveler').length ) > -1 ) {
+
+    } else if ( window.location.href.indexOf("Ticket/Modify.html") > 1 && jQuery('#NonAdminTraveler').length > 0 ) {
         jQuery('.titlebox.card.ticket-info-basics').hide()
+    } else if ( ( window.location.href.indexOf("Ticket/Create.html") > 1 || window.location.href.indexOf("Ticket/Update.html") > 0 )
+                 && jQuery('#NonAdminTraveler').length > 0 ) {
+        jQuery('.titlebox.card.ticket-info-basics').hide()
+
+        let message_box
+        if ( window.location.href.indexOf("Ticket/Update.html") > 0 ) {
+            message_box = jQuery('#ticket-update-message').find('.fields')
+        } else {
+            message_box = jQuery('#ticket-create-message').find('.fields')
+        }
+
+        message_box.children('.field').each(function(){
+            const val = this
+            console.log(this)
+            const isSafe = jQuery.grep(['[name=Subject]', '#attach-dropzone', '#Content', '#UpdateContent', 'UpdateSubject'], function(e) {
+                return jQuery(val).children().find(e).length
+            })
+            if ( isSafe.length ) {
+            } else {
+                jQuery(this).hide()
+            }
+        })
     }
 })
 
 const UpdateFlightInfo = (flight_info) => {
-    jQuery('#travelers-flight-info').html(
-      '<div id="travelers-flight-info">'
-        +'<p style="color:red;">Flight Delayed: ' + flight_info.Delay + '</p>'
-        +'<p>Terminal: ' + flight_info.Terminal + '</p>'
-        +'<p>Gate: ' + flight_info.Gate + '</p>'
-      +'</div>'
-    )
+    if ( flight_info.Delay ) {
+        jQuery('#travelers-flight-info').html('<div id="travelers-flight-info" class="col-md-12">'
+            +'<div class="form-row">'
+                +'<div class="label">Arrival Time:</div>'
+                +'<div class="value entry" style="color:red;">'+flight_info.Delay+'</div>'
+            +'</div>'
+            +'<div class="form-row">'
+                +'<div class="label">Terminal:</div>'
+                +'<div class="value entry">'+flight_info.Terminal+'</div>'
+            +'</div>'
+            +'<div class="form-row">'
+                +'<div class="label">Gate:</div>'
+                +'<div class="value entry">'+flight_info.Gate+'</div>'
+            +'</div>'
+        +'</div>')
+    } else {
+        jQuery('#travelers-flight-info').html('<div id="travelers-flight-info">No flight information available</div>')
+    }
 }
 
 const UpdateFlightNumber = (TicketId) => {
@@ -46,3 +83,7 @@ const UpdateFlightNumber = (TicketId) => {
         UpdateFlightInfo(flight_info)
     })
 }
+
+jQuery(function () {
+    jQuery('[data-toggle="tooltip"]').tooltip()
+})

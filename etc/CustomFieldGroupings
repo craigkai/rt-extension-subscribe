@@ -1,9 +1,8 @@
 Set(%CustomFieldGroupings,
     'RT::Ticket' => [
-        'Travel Dates'       => [qw/Depart Return/],
-        'Accomidations'      => [qw/AirBnB Hotels/],
-        'Travelers'          => [qw//],
-        'Travel Links'       => [qw/Information/, 'Things To Do'],
-        'Flight Information' => ['Flight Number']
+        'General Info'       => ['Summary', 'Trip Start', 'Trip End'],
+        'Venue'              => ['Accommodations', 'State', 'City'],
+        'Transportation'     => [qw/Depart Return/, 'Flight Number'],
+        'Expenses (<Name>: $##.##)' => ['Expenses'],
     ]
 );

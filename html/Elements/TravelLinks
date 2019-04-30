@@ -1,6 +1,6 @@
 <div class="col-md-12">
   <&|/Widgets/TitleBox, title => loc("Travel Links"), class => '', &>
-    <& /Elements/ShowLinksOfType, Object => $Ticket, Type => 'RefersTo' &>
+      <& /Elements/ShowLinksOfType, Object => $Ticket, Type => 'RefersTo' &>
   </&>
 </div>
 

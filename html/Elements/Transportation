@@ -1,0 +1,67 @@
+<div class="col-md-12">
+  <&|/Widgets/TitleBox, title => loc("Transportation"), class => '', &>
+    <div class="form-row">
+      <div class="label">Flight Number:</div>
+      <div class="value entry col-md-9">
+        <input id="Travelers-Flight-Number-<%$Ticket->Id%>" onchange="UpdateFlightNumber(<%$Ticket->Id%>)" class="form-control" type="text" value="<%$FlightNumber%>"/>
+        <em>(Must set Departure date and time)</em>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-md-12">
+        <& /Elements/ShowCustomFields, Table => 0, Object => $Ticket, Grouping => 'Transportation' &>
+      </div>
+    </div>
+
+%    if ( scalar keys %flight ) {
+    <div id="travelers-flight-info" class="col-md-12">
+
+      <div class="form-row">
+        <div class="label col-md-auto">
+          Arrival Time:
+        </div>
+        <div class="value col-md-9">
+          <% $flight{'Delay'} %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="label col-md-auto">
+          Terminal:
+        </div>
+        <div class="value entry col-md-9">
+          <%$flight{'Terminal'}%>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="label col-md-auto">
+          Gate:
+        </div>
+        <div class="value entry col-md-9">
+          <%$flight{'Gate'}%>
+        </div>
+      </div>
+
+  </div>
+%    } else {
+    <div id="travelers-flight-info">
+      No flight information available
+    </div>
+%  }
+  </&>
+</div>
+
+<%init>
+use RT::ExternalTools;
+
+my %flight = RT::ExternalTools::Flights->GetFlightData(
+  TicketId => $Ticket->Id, CurrentUser => $session{'CurrentUser'}, %ARGS
+);
+$FlightNumber = $Ticket->FirstCustomFieldValue('Flight Number');
+</%init>
+<%args>
+$FlightNumber  => undef
+$Ticket
+</%args>
