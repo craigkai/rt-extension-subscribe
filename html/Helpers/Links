@@ -1,0 +1,25 @@
+% $r->content_type('application/json; charset=utf-8');
+<% JSON( \%data ) |n %>
+% $m->abort;
+<%init>
+use JSON::Parse qw( parse_json );
+$POSTDATA = parse_json($POSTDATA);
+my %data;
+
+my $Ticket = RT::Ticket->new($session{'CurrentUser'});
+my ($ret, $msg) = $Ticket->Load($POSTDATA->{'TicketId'});
+RT::Logger->error($msg) unless $ret;
+
+if ( $POSTDATA->{'NewTravelLink'} ) {
+    $POSTDATA->{'SubmitTicket'} = "Save Changes";
+
+    $msg = $Ticket->Atomic(sub{
+        ProcessTicketLinks( TicketObj => $Ticket, ARGSRef => $POSTDATA );
+    });
+
+    $data{'html'} = $m->scomp('/Elements/TravelLinks', Ticket => $Ticket);
+}
+</%init>
+<%args>
+$POSTDATA        => undef
+</%args>

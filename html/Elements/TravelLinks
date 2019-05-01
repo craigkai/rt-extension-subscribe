@@ -1,11 +1,23 @@
-<div class="col-md-12">
+<div class="col-md-12" id="TravelLinks-Container">
   <&|/Widgets/TitleBox, title => loc("Travel Links"), class => '', &>
-      <& /Elements/ShowLinksOfType, Object => $Ticket, Type => 'RefersTo' &>
-  </&>
+    <& /Elements/ShowLinksOfType, Object => $Ticket, Type => 'RefersTo' &>
+% if ( $Ticket->CurrentUserHasRight('ModifyTicket') ) {
+      <form onsubmit="return NewTravelLinks(<% $Ticket->Id %>)" class="form-row" id="TravelLinks-form">
+        <input type="hidden" name="NewTravelLink" value=1/>
+        <div class="col-md-auto label">
+          <span class="label">Add Link:</span>
+        </div>
+        <div class="col-md-auto">
+          <input class="form-control" name="<%$Ticket->Id%>-RefersTo" value="<% $ARGS{$Ticket->Id."-RefersTo"} || '' %>"/>
+        </div>
+        <div class="col-md-auto">
+          <& /Elements/Submit, Name => 'SubmitTicket', Label => loc('Add') &>
+        </div>
+      </form>
+% }
+    </&>
 </div>
 
-<%init>
-</%init>
 <%args>
 $Ticket
 </%args>

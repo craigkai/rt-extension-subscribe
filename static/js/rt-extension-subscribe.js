@@ -31,7 +31,6 @@ jQuery(function() {
 
         message_box.children('.field').each(function(){
             const val = this
-            console.log(this)
             const isSafe = jQuery.grep(['[name=Subject]', '#attach-dropzone', '#Content', '#UpdateContent', 'UpdateSubject'], function(e) {
                 return jQuery(val).children().find(e).length
             })
@@ -64,6 +63,30 @@ const UpdateFlightInfo = (flight_info) => {
     }
 }
 
+const NewTravelLinks = (ticketId) => {
+    const link = jQuery('[name="'+ticketId+'-RefersTo"]').val()
+
+    const values = {
+        "TicketId"     : ticketId,
+        NewTravelLink : 1
+    }
+    values[ticketId+'-RefersTo'] = link
+
+    fetch(RT.Config.WebHomePath + "/Helpers/Links", {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(values),
+    }).then(function(response) { return response.json() }
+    ).then(function(json){
+        jQuery('#TravelLinks-Container').html(json.html)
+    })
+    return false
+}
+
 const UpdateFlightNumber = (TicketId) => {
     const flight_number = jQuery("#Travelers-Flight-Number-"+TicketId).val()
 
@@ -73,6 +96,7 @@ const UpdateFlightNumber = (TicketId) => {
     }
     fetch(RT.Config.WebHomePath + "/Helpers/Flights", {
         method: 'POST',
+        credentials: 'include',
         headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
