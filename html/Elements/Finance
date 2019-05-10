@@ -44,11 +44,11 @@ while ( my $expense = $expenses->Next ) {
   if ( $1 =~ /per person/ ) {
     $total_expenses = $total_expenses + ( $cost * $num_travelers );
   } else {
-    $total_expenses = sprintf("%.2f", $total_expenses + $cost);
+    $total_expenses = $total_expenses + $cost;
   }
 }
 
-my $cost_per_traveler = $total_expenses / $num_travelers;
+my $cost_per_traveler = $total_expenses = sprintf("%.2f", $total_expenses / $num_travelers);
 </%init>
 <%args>
 $Ticket
